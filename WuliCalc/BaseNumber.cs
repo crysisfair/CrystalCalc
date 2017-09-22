@@ -46,7 +46,27 @@ namespace CrystalCalc
         {
             string s = GetBaseData().ToString();
             char[] bs = s.ToCharArray();
-            return 0;
+            throw new NotImplementedException();
+        }
+
+        protected UInt64 TruncateTo(int width)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected UInt64 SaturateTo(int width)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Truncate(int width)
+        {
+            SetBaseData(TruncateTo(width));
+        }
+
+        public void Saturate(int width)
+        {
+            SetBaseData(SaturateTo(width));
         }
 
         protected UInt64 GetBaseData()
@@ -65,6 +85,7 @@ namespace CrystalCalc
             UInt64 res = 0;
 
             if (width > 64) width = 64;
+            else if (width < 1) width = 1;
 
             for(int i = 0; i < width; i++)
             {
@@ -91,8 +112,24 @@ namespace CrystalCalc
 
         protected char[] GetFixedWidthDecChars(UInt64 n, int msb, int lsb)
         {
+            if(lsb < 0)
+            {
+                throw new ArgumentOutOfRangeException("LSB value is less than 0");
+            }
+            if(msb >= _Width)
+            {
+                throw new ArgumentOutOfRangeException("MSB value is larger than data width");
+            }
+
+            UInt64 mask = GetMask(lsb, msb - lsb);
+            UInt64 masked = n & mask;
+
+            if(lsb > 0)
+            {
+                masked = masked >> lsb;
+            }
             string s = n.ToString();
-            return new char[10];
+            return s.ToCharArray();
         }
 
     }
