@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CrystalCalc
 {
-    public interface CrystalOperator
+    public interface IWuliOperator
     {
         bool IsSupported(BaseNumber n1, BaseNumber n2);
     }
