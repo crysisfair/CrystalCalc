@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CrystalCalc.App</StartupObject>
+    <StartupObject>WuliCalc.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
