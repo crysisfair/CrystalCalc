@@ -87,9 +87,13 @@ namespace CrystalCalc
             if (width > 64) width = 64;
             else if (width < 1) width = 1;
 
-            for(int i = 0; i < width; i++)
+            if(width == 64)
             {
-                res = (res << 1) ^ 1;
+                res = UInt64.MaxValue;
+            }
+            else
+            {
+                res = (1ul << (width + 1)) - 1;
             }
             return res;
         }
@@ -130,6 +134,44 @@ namespace CrystalCalc
             }
             string s = n.ToString();
             return s.ToCharArray();
+        }
+
+        public static UInt64 operator +(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static UInt64 operator -(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static UInt64 operator >>(BaseNumber lhs, int shift)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static UInt64 operator <<(BaseNumber lhs, int shift)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator ==(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
+        }
+        public static bool operator !=(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static int operator >(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
+        }
+        public static int operator <(BaseNumber lhs, BaseNumber rhs)
+        {
+            throw new NotImplementedException();
         }
 
     }
