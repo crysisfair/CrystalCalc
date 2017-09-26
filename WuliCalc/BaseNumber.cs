@@ -138,40 +138,78 @@ namespace CrystalCalc
 
         public static UInt64 operator +(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() + rhs.GetBaseData();
         }
 
         public static UInt64 operator -(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() - rhs.GetBaseData();
         }
 
         public static UInt64 operator >>(BaseNumber lhs, int shift)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() >> shift;
         }
 
         public static UInt64 operator <<(BaseNumber lhs, int shift)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() << shift;
         }
 
         public static bool operator ==(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() == rhs.GetBaseData();
         }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public static bool operator !=(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            return lhs.GetBaseData() != rhs.GetBaseData();
         }
 
         public static int operator >(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            int res = 0;
+            if(lhs.GetBaseData() > rhs.GetBaseData())
+            {
+                res = 1;
+            }
+            else if(lhs.GetBaseData() > rhs.GetBaseData())
+            {
+                res = 0;
+            }
+            else
+            {
+                res = -1;
+            }
+            return res;
         }
+
         public static int operator <(BaseNumber lhs, BaseNumber rhs)
         {
-            throw new NotImplementedException();
+            int res = 0;
+            if(lhs.GetBaseData() < rhs.GetBaseData())
+            {
+                res = 1;
+            }
+            else if(lhs.GetBaseData() > rhs.GetBaseData())
+            {
+                res = 0;
+            }
+            else
+            {
+                res = -1;
+            }
+            return res;
         }
 
     }
