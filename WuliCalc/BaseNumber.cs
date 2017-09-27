@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CrystalCalc
 {
-    public class BaseNumber
+    public class BaseNumber : IComparable<BaseNumber>
     {
         protected float _N;
         protected int _Width = 64;
@@ -32,6 +32,7 @@ namespace CrystalCalc
             SetBaseData(n);
         }
 
+        #region Base Function
         protected void SetBaseData(UInt64 n)
         {
             _N = Convert.ToSingle(n);
@@ -114,28 +115,9 @@ namespace CrystalCalc
             return m & inv;
         }
 
-        protected char[] GetFixedWidthDecChars(UInt64 n, int msb, int lsb)
-        {
-            if(lsb < 0)
-            {
-                throw new ArgumentOutOfRangeException("LSB value is less than 0");
-            }
-            if(msb >= _Width)
-            {
-                throw new ArgumentOutOfRangeException("MSB value is larger than data width");
-            }
+        #endregion
 
-            UInt64 mask = GetMask(lsb, msb - lsb);
-            UInt64 masked = n & mask;
-
-            if(lsb > 0)
-            {
-                masked = masked >> lsb;
-            }
-            string s = n.ToString();
-            return s.ToCharArray();
-        }
-
+        #region OPERATOR
         public static UInt64 operator +(BaseNumber lhs, BaseNumber rhs)
         {
             return lhs.GetBaseData() + rhs.GetBaseData();
@@ -178,30 +160,23 @@ namespace CrystalCalc
 
         public static int operator >(BaseNumber lhs, BaseNumber rhs)
         {
-            int res = 0;
-            if(lhs.GetBaseData() > rhs.GetBaseData())
-            {
-                res = 1;
-            }
-            else if(lhs.GetBaseData() > rhs.GetBaseData())
-            {
-                res = 0;
-            }
-            else
-            {
-                res = -1;
-            }
-            return res;
+            return lhs.CompareTo(rhs);
         }
 
         public static int operator <(BaseNumber lhs, BaseNumber rhs)
         {
+            return rhs.CompareTo(lhs);
+        }
+        #endregion
+
+        public int CompareTo(BaseNumber cmp)
+        {
             int res = 0;
-            if(lhs.GetBaseData() < rhs.GetBaseData())
+            if(this.GetBaseData() > cmp.GetBaseData())
             {
                 res = 1;
             }
-            else if(lhs.GetBaseData() > rhs.GetBaseData())
+            else if(this.GetBaseData() > cmp.GetBaseData())
             {
                 res = 0;
             }
@@ -212,5 +187,39 @@ namespace CrystalCalc
             return res;
         }
 
+        #region String Fomart
+
+        protected char[] GetFixedWidthDecChars(int msb, int lsb)
+        {
+            if(lsb < 0)
+            {
+                throw new ArgumentOutOfRangeException("LSB value is less than 0");
+            }
+            if(msb >= _Width)
+            {
+                throw new ArgumentOutOfRangeException("MSB value is larger than data width");
+            }
+            UInt64 mask = GetMask(lsb, msb - lsb);
+            UInt64 masked = this.GetBaseData() & mask;
+            if(lsb > 0)
+            {
+                masked = masked >> lsb;
+            }
+            return masked.ToString().ToCharArray();
+        }
+
+        protected char[] GetFixedWidthHexChars(int msb, int lsb)
+        {
+            char[] cs = GetFixedWidthDecChars(msb, lsb);
+            UInt64 n = UInt64.Parse(cs.ToString());
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
