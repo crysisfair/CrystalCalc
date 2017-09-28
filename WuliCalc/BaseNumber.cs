@@ -212,12 +212,41 @@ namespace CrystalCalc
         {
             char[] cs = GetFixedWidthDecChars(msb, lsb);
             UInt64 n = UInt64.Parse(cs.ToString());
-            throw new NotImplementedException();
+            UInt64 div = n;
+            UInt64 rem = 0;
+            List<int> hex = new List<int>();
+            while(div > 0)
+            {
+                rem = div % 16;
+                hex.Add((int)rem);
+                div = div / 16;
+            }
+            string res = "";
+            foreach(int h in hex)
+            {
+                string s = h.ToString("X");
+                res.Insert(0, s);
+            }
+            return res.ToCharArray();
         }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return GetFixedWidthDecChars(this.Width - 1, 0).ToString();
+        }
+
+        public string ToString(string format)
+        {
+            string res = "";
+            if(format.Equals("D"))
+            {
+                res = this.GetFixedWidthDecChars(this.Width - 1, 0).ToString();
+            }
+            else if(format == "X")
+            {
+                res = this.GetFixedWidthHexChars(this.Width - 1, 0).ToString();
+            }
+            return res;
         }
 
         #endregion
