@@ -7,7 +7,7 @@ namespace CrystalCalc
 {
     public class BaseNumber : IComparable<BaseNumber>
     {
-        protected float _N;
+        protected UInt64 _N;
         protected int _Width = 64;
         protected bool _Signed = false;
 
@@ -16,13 +16,19 @@ namespace CrystalCalc
 
         public BaseNumber()
         {
-            _N = 0.0f;
+            _N = 0;
+        }
+
+        public BaseNumber(int n)
+        {
+            _Width = 32;
+            SetBaseData(n);
         }
 
         public BaseNumber(UInt64 n, int width)
         {
             _Width = width;
-            _N = n;
+            SetBaseData(n);
         }
         
         public BaseNumber(UInt64 n, int width, bool signed)
@@ -35,7 +41,12 @@ namespace CrystalCalc
         #region Base Function
         protected void SetBaseData(UInt64 n)
         {
-            _N = Convert.ToSingle(n);
+            _N = n;
+        }
+
+        protected void SetBaseData(UInt32 n)
+        {
+            _N = (UInt64)n;
         }
 
         public UInt64 GetData()
@@ -47,6 +58,11 @@ namespace CrystalCalc
         {
             string s = GetBaseData().ToString();
             char[] bs = s.ToCharArray();
+            throw new NotImplementedException();
+        }
+
+        protected UInt64 ExpandTo(int width)
+        {
             throw new NotImplementedException();
         }
 
@@ -72,8 +88,7 @@ namespace CrystalCalc
 
         protected UInt64 GetBaseData()
         {
-            UInt64 n = Convert.ToUInt64(Math.Round(_N));
-            return n;
+            return _N;
         }
 
         /// <summary>
@@ -167,6 +182,16 @@ namespace CrystalCalc
         {
             return rhs.CompareTo(lhs);
         }
+
+        public static UInt64 operator |(BaseNumber lhs, BaseNumber rhs)
+        {
+            return lhs.XorWith(rhs);
+        }
+
+        public static UInt64 operator &(BaseNumber lhs, BaseNumber rhs)
+        {
+            return lhs.AndWith(rhs);
+        }
         #endregion
 
         public int CompareTo(BaseNumber cmp)
@@ -185,6 +210,33 @@ namespace CrystalCalc
                 res = -1;
             }
             return res;
+        }
+
+        public UInt64 XorWith(BaseNumber n)
+        {
+            if(n.Width < this.Width)
+            {
+                n.ExpandTo(this.Width);
+            }
+            return n.GetData() | this.GetData();
+        }
+
+        public UInt64 AndWith(BaseNumber n)
+        {
+            if(n.Width < this.Width)
+            {
+                n.ExpandTo(this.Width);
+            }
+            return n.GetData() & this.GetData();
+        }
+
+        public void RevertBit(int posi)
+        {
+            if (posi >= this.Width)
+            {
+                return;
+            }
+            BaseNumber n = new BaseNumber(1);
         }
 
         #region String Fomart
@@ -230,9 +282,120 @@ namespace CrystalCalc
             return res.ToCharArray();
         }
 
+        protected UInt64 HexChar2Dec(char hex)
+        {
+            byte n = (byte)hex;
+            if(n > 47 && n < 58) // 0-9
+            {
+                n -= 48;
+            }
+            else if(n > 64 && n < 71) // A-F
+            {
+                n -= 87;
+            }
+             else if(n > 96 && n < 103) // a-f
+            {
+                n -= 87;
+            }
+            else
+            {
+                n = 0;
+            }
+            return (UInt64)n;
+        }
+        
+        protected string HexChar2Bin(char hex)
+        {
+            string res = "";
+            switch(hex)
+            {
+                case '0':
+                    res = "0000";
+                    break;
+                case '1':
+                    res = "0001";
+                    break;
+                case '2':
+                    res = "0010";
+                    break;
+                case '3':
+                    res = "0011";
+                    break;
+                case '4':
+                    res = "0100";
+                    break;
+                case '5':
+                    res = "0101";
+                    break;
+                case '6':
+                    res = "0110";
+                    break;
+                case '7':
+                    res = "0111";
+                    break;
+                case '8':
+                    res = "1000";
+                    break;
+                case '9':
+                    res = "1001";
+                    break;
+                case 'a':
+                    res = "1010";
+                    break;
+                case 'A':
+                    res = "1010";
+                    break;
+                case 'b':
+                    res = "1011";
+                    break;
+                case 'B':
+                    res = "1011";
+                    break;
+                case 'c':
+                    res = "1100";
+                    break;
+                case 'C':
+                    res = "1100";
+                    break;
+                case 'd':
+                    res = "1101";
+                    break;
+                case 'D':
+                    res = "1101";
+                    break;
+                case 'e':
+                    res = "1110";
+                    break;
+                case 'E':
+                    res = "1110";
+                    break;
+                case 'f':
+                    res = "1111";
+                    break;
+                case 'F':
+                    res = "1111";
+                    break;
+                default:
+                    res = "0000";
+                    break;
+            }
+            return res;
+        }
+
+        protected char[] GetFixedWidthBinChars(int msb, int lsb)
+        {
+            char[] cs = GetFixedWidthHexChars(msb, lsb);
+            string res = "";
+            foreach(char c in cs)
+            {
+                res += HexChar2Bin(c);
+            }
+            return res.ToCharArray();
+        }
+
         public override string ToString()
         {
-            return GetFixedWidthDecChars(this.Width - 1, 0).ToString();
+            return ToString("D");
         }
 
         public string ToString(string format)
