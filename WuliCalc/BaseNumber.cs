@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CrystalCalc
+namespace WuliCalc
 {
     public class BaseNumber : IComparable<BaseNumber>
     {
@@ -19,10 +19,16 @@ namespace CrystalCalc
             _N = 0;
         }
 
+        public BaseNumber(UInt64 n)
+        {
+            _Width = 64;
+            SetBaseData(n);
+        }
+
         public BaseNumber(int n)
         {
             _Width = 32;
-            SetBaseData(n);
+            SetBaseData((UInt64)n);
         }
 
         public BaseNumber(UInt64 n, int width)
@@ -133,24 +139,24 @@ namespace CrystalCalc
         #endregion
 
         #region OPERATOR
-        public static UInt64 operator +(BaseNumber lhs, BaseNumber rhs)
+        public static BaseNumber operator +(BaseNumber lhs, BaseNumber rhs)
         {
-            return lhs.GetBaseData() + rhs.GetBaseData();
+            return new BaseNumber(lhs.GetBaseData() + rhs.GetBaseData());
         }
 
-        public static UInt64 operator -(BaseNumber lhs, BaseNumber rhs)
+        public static BaseNumber operator -(BaseNumber lhs, BaseNumber rhs)
         {
-            return lhs.GetBaseData() - rhs.GetBaseData();
+            return new BaseNumber(lhs.GetBaseData() - rhs.GetBaseData());
         }
 
-        public static UInt64 operator >>(BaseNumber lhs, int shift)
+        public static BaseNumber operator >>(BaseNumber lhs, int shift)
         {
-            return lhs.GetBaseData() >> shift;
+            return new BaseNumber(lhs.GetBaseData() >> shift);
         }
 
-        public static UInt64 operator <<(BaseNumber lhs, int shift)
+        public static BaseNumber operator <<(BaseNumber lhs, int shift)
         {
-            return lhs.GetBaseData() << shift;
+            return new BaseNumber(lhs.GetBaseData() << shift);
         }
 
         public static bool operator ==(BaseNumber lhs, BaseNumber rhs)
@@ -183,14 +189,16 @@ namespace CrystalCalc
             return rhs.CompareTo(lhs);
         }
 
-        public static UInt64 operator |(BaseNumber lhs, BaseNumber rhs)
+        public static BaseNumber operator |(BaseNumber lhs, BaseNumber rhs)
         {
-            return lhs.XorWith(rhs);
+            lhs.XorWith(rhs);
+            return lhs;
         }
 
-        public static UInt64 operator &(BaseNumber lhs, BaseNumber rhs)
+        public static BaseNumber operator &(BaseNumber lhs, BaseNumber rhs)
         {
-            return lhs.AndWith(rhs);
+            lhs.AndWith(rhs);
+            return lhs;
         }
         #endregion
 
@@ -212,22 +220,22 @@ namespace CrystalCalc
             return res;
         }
 
-        public UInt64 XorWith(BaseNumber n)
+        public void XorWith(BaseNumber n)
         {
             if(n.Width < this.Width)
             {
                 n.ExpandTo(this.Width);
             }
-            return n.GetData() | this.GetData();
+            SetBaseData(n.GetData() | this.GetData());
         }
 
-        public UInt64 AndWith(BaseNumber n)
+        public void AndWith(BaseNumber n)
         {
             if(n.Width < this.Width)
             {
                 n.ExpandTo(this.Width);
             }
-            return n.GetData() & this.GetData();
+            SetBaseData(n.GetData() & this.GetData());
         }
 
         public void RevertBit(int posi)
