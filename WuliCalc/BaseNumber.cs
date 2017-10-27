@@ -14,6 +14,8 @@ namespace WuliCalc
         public int Width => _Width;
         public bool Signed => _Signed;
 
+        public const int DefaultWidth = 32;
+
         public BaseNumber()
         {
             _N = 0;
