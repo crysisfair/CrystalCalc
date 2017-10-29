@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -46,9 +47,9 @@ namespace WuliCalc
     /// </summary>
     public class NumberPanel : Control
     {
-        BaseNumber _N;
+        Number _N;
         public static readonly DependencyProperty DataWidthProperty = DependencyProperty.Register("Width", typeof(int), typeof(NumberPanel),
-            new FrameworkPropertyMetadata(BaseNumber.DefaultWidth, new PropertyChangedCallback(WidthPropertyChangedCallback)));
+            new FrameworkPropertyMetadata(Number.DefaultWidth, new PropertyChangedCallback(WidthPropertyChangedCallback)));
 
         static NumberPanel()
         {
@@ -101,6 +102,12 @@ namespace WuliCalc
             RoutedPropertyChangedEventArgs<int> arg =
                 new RoutedPropertyChangedEventArgs<int>(oldValue, newValue, WidthUpdatedEvent);
             this.RaiseEvent(arg);
+        }
+
+        protected override void OnRender(DrawingContext dc)
+        {
+            base.OnRender(dc);
+            // Add render logic here
         }
     }
 }

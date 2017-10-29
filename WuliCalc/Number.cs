@@ -10,21 +10,20 @@ namespace WuliCalc
         public Number(UInt64 n) 
             : base(n, 64)
         {
-            SetBaseData(n);
         }
 
         public Number(UInt32 n) 
-            : base(n, 32)
+            : base((UInt64)n, 32)
         {
         }
 
         public Number(UInt16 n)
-            : base(n, 16)
+            : base((UInt64)n, 16)
         {
         }
 
         public Number(Byte n) 
-            : base(n, 8)
+            : base((UInt64)n, 8)
         {
         }
 
