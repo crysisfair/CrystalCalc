@@ -23,6 +23,8 @@ namespace WuliCalc
         public MainWindow()
         {
             InitializeComponent();
+            NumberPanel p = new NumberPanel(32);
+            main.Children.Add(p);
         }
     }
 }

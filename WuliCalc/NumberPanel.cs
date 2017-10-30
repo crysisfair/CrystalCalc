@@ -45,69 +45,75 @@ namespace WuliCalc
     ///     <MyNamespace:NumberPanel/>
     ///
     /// </summary>
-    public class NumberPanel : Control
+    public class NumberPanel : Grid 
     {
         Number _N;
-        public static readonly DependencyProperty DataWidthProperty = DependencyProperty.Register("Width", typeof(int), typeof(NumberPanel),
-            new FrameworkPropertyMetadata(Number.DefaultWidth, new PropertyChangedCallback(WidthPropertyChangedCallback)));
+        int _ID;
 
-        static NumberPanel()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(NumberPanel), new FrameworkPropertyMetadata(typeof(NumberPanel)));
-        }
+        public int DataWidth { get; set; } 
 
-        private static void WidthPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs arg)
+        // |--------------------------------------------------------------------|
+        // |                                                                    |
+        // |                 |----------------------------------------          |
+        // |                 |                   ----------                     |
+        // |_GridLeftPadding | _GridLeftMargin  |          |                    |
+        // |                 |                   ----------                     |
+        // |                 |----------------------------------------          |
+        // |                                                                    |
+        // |--------------------------------------------------------------------|
+        float _TextBoxWidth = 25.0F;
+        float _TextBoxHeight = 10.0F;
+        float _TextBoxLeftMargin= 2.5F;
+        float _TextBoxRightMargin = 2.5F;
+        float _TextBoxTopMargin = 10.0F;
+        float _TextBoxBottomMargin = 10.0F;
+        float _GridLeftPadding = 10.0F;
+        float _GridRightPadding = 10.0F;
+        float _GridLeftMargin = 10.0F;
+        float _GridRightMargin = 10.0F;
+        float _GridTopMargin = 10.0F;
+        float _GridBottomMargin = 10.0F;
+
+        public NumberPanel(int width) : base()
         {
-            if (sender != null && sender is NumberPanel)
+            DataWidth = width;
+            Height = CalcGridHeight();
+            Width = CalcGridWidth(DataWidth);
+            HorizontalAlignment = HorizontalAlignment.Left;
+            VerticalAlignment = VerticalAlignment.Top;
+
+            List<TextBox> tbs = new List<TextBox>();
+            for(int i = 0; i < DataWidth; i += 1)
             {
-                NumberPanel panel = sender as NumberPanel;
-                panel.OnWidthUpdated((int)arg.OldValue, (int)arg.NewValue);
-
+                TextBox tb = new TextBox();
+                tb.Text = i.ToString();
+                tbs.Add(tb);
+                ColumnDefinition col = new ColumnDefinition();
+                ColumnDefinitions.Add(col);
+                SetColumn(tb, i);
+                Children.Add(tb);
             }
         }
 
-        [Description("Get current width")]
-        [Category("Common Properties")]
-        public int DataWidth
+        protected float CalcGridWidth(int width)
         {
-            get
-            {
-                return (int)this.GetValue(DataWidthProperty);
-            }
-            set
-            {
-                this.SetValue(DataWidthProperty, value);
-            }
+            return _GridLeftPadding + width * (_TextBoxLeftMargin + _TextBoxWidth + _TextBoxRightMargin) + _GridRightPadding;
         }
 
-        [Description("Happen after width is changed")]
-        public event RoutedPropertyChangedEventHandler<int> WidthUpdated
+        protected float CalcGridHeight()
         {
-            add
-            {
-                this.AddHandler(WidthUpdatedEvent, value);
-            }
-            remove
-            {
-                this.RemoveHandler(WidthUpdatedEvent, value);
-            }
+            return _TextBoxTopMargin + _TextBoxHeight + _TextBoxBottomMargin;
         }
 
-        public static readonly RoutedEvent WidthUpdatedEvent =
-           EventManager.RegisterRoutedEvent("WidthUpdated",
-            RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<int>), typeof(NumberPanel));
-
-        protected virtual void OnWidthUpdated(int oldValue, int newValue)
+        protected float CalcPanelWidth(int width)
         {
-            RoutedPropertyChangedEventArgs<int> arg =
-                new RoutedPropertyChangedEventArgs<int>(oldValue, newValue, WidthUpdatedEvent);
-            this.RaiseEvent(arg);
+            return _GridLeftMargin + CalcGridWidth(width) + _GridRightMargin;
         }
 
-        protected override void OnRender(DrawingContext dc)
+        protected float CalcPanelHeight(int width)
         {
-            base.OnRender(dc);
-            // Add render logic here
+            return _GridTopMargin + CalcGridHeight() + _GridBottomMargin;
         }
+
     }
 }
