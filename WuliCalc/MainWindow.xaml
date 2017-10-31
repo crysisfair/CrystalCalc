@@ -6,14 +6,8 @@
         xmlns:local="clr-namespace:WuliCalc"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid Margin="0,10,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="17*"/>
-            <ColumnDefinition Width="184*"/>
-            <ColumnDefinition Width="29*"/>
-            <ColumnDefinition Width="295*"/>
-        </Grid.ColumnDefinitions>
-        <Menu HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="517" Grid.ColumnSpan="4">
+    <Grid Name="mainGrid" Margin="0,0,0,0">
+        <Menu x:Name="mainMenu" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="517" Grid.ColumnSpan="4">
             <MenuItem Header="File(_F)">
                 <MenuItem Header="Exit(_X)"></MenuItem>
             </MenuItem>
@@ -28,9 +22,15 @@
                     <MenuItem Header="5" IsCheckable="True"></MenuItem>
                     <MenuItem Header="Custom" IsCheckable="True"></MenuItem>
                 </MenuItem>
+                <MenuItem Header="Data Width">
+                    <MenuItem Header="8" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="16" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="32" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="64" Click="DataWidthMenu_Click"></MenuItem>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="About(_A)"></MenuItem>
         </Menu>
-        <Grid Name="main" Grid.ColumnSpan="4" Margin="0,25,0,0"/>
+        <Grid Name="contentGrid" Grid.ColumnSpan="4" Margin="0,25,0,0"/>
     </Grid>
 </Window>

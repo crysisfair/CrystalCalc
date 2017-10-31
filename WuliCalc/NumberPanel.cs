@@ -61,59 +61,107 @@ namespace WuliCalc
         // |                 |----------------------------------------          |
         // |                                                                    |
         // |--------------------------------------------------------------------|
-        float _TextBoxWidth = 25.0F;
-        float _TextBoxHeight = 10.0F;
-        float _TextBoxLeftMargin= 2.5F;
-        float _TextBoxRightMargin = 2.5F;
-        float _TextBoxTopMargin = 10.0F;
-        float _TextBoxBottomMargin = 10.0F;
-        float _GridLeftPadding = 10.0F;
-        float _GridRightPadding = 10.0F;
-        float _GridLeftMargin = 10.0F;
-        float _GridRightMargin = 10.0F;
-        float _GridTopMargin = 10.0F;
-        float _GridBottomMargin = 10.0F;
+        double _TextBoxHeight = 25.0F;
+        double _TextBoxWidth = 25.0F;
+        double _TextBoxLeftMargin= 0F;
+        double _TextBoxRightMargin = 0F;
+        double _TextBoxTopMargin = 0F;
+        double _TextBoxBottomMargin = 0F;
+
+        double _LabelHeight = 25.0F;
+        double _LabelWidth = 25.0F;
+
+        double _GridLeftPadding = 0.0F;
+        double _GridRightPadding = 0.0F;
+        double _GridLeftMargin = 0.0F;
+        double _GridRightMargin = 0.0F;
+        double _GridTopMargin = 0.0F;
+        double _GridBottomMargin = 0.0F;
+
+        double _BorderThickness = 1.0F;
+        double _GridRoundSize = 1.0F;
 
         public NumberPanel(int width) : base()
         {
+            Render(width);
+        }
+
+        public void Render(int width)
+        {
             DataWidth = width;
-            Height = CalcGridHeight();
-            Width = CalcGridWidth(DataWidth);
+            Children.Clear();
+            Height = CalcPanelHeight();
+            Width = CalcPanelWidth(DataWidth);
+            Margin = new Thickness(_GridLeftMargin, _GridTopMargin, _GridRightMargin, _GridBottomMargin);
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
+
+            RowDefinition rowLabel = new RowDefinition();
+            RowDefinitions.Add(rowLabel);
+            RowDefinition rowTb = new RowDefinition();
+            RowDefinitions.Add(rowTb);
 
             List<TextBox> tbs = new List<TextBox>();
             for(int i = 0; i < DataWidth; i += 1)
             {
                 TextBox tb = new TextBox();
                 tb.Text = i.ToString();
+                tb.HorizontalContentAlignment = HorizontalAlignment.Center;
+                tb.VerticalContentAlignment = VerticalAlignment.Center;
+                tb.Height = _TextBoxHeight;
+                tb.Width = _TextBoxWidth;
+                tb.Margin = new Thickness(_TextBoxLeftMargin, _TextBoxTopMargin, _TextBoxRightMargin, _TextBoxBottomMargin);
                 tbs.Add(tb);
                 ColumnDefinition col = new ColumnDefinition();
                 ColumnDefinitions.Add(col);
                 SetColumn(tb, i);
+                SetRow(tb, 1);
+
+                Label lb = new Label();
+                lb.Content = i.ToString();
+                lb.VerticalContentAlignment = VerticalAlignment.Center;
+                lb.HorizontalContentAlignment = HorizontalAlignment.Center;
+                lb.Height = _LabelHeight;
+                lb.Width = _LabelWidth;
+                SetColumn(lb, i);
+                SetRow(lb, 0);
+
                 Children.Add(tb);
+                Children.Add(lb);
             }
         }
 
-        protected float CalcGridWidth(int width)
+        public double GetActualWidth()
+        {
+            return CalcPanelWidth(DataWidth);
+        }
+
+        protected double CalcGridWidth(int width)
         {
             return _GridLeftPadding + width * (_TextBoxLeftMargin + _TextBoxWidth + _TextBoxRightMargin) + _GridRightPadding;
         }
 
-        protected float CalcGridHeight()
+        protected double CalcGridHeight()
         {
-            return _TextBoxTopMargin + _TextBoxHeight + _TextBoxBottomMargin;
+            return 2 * (_TextBoxTopMargin + _TextBoxHeight + _TextBoxBottomMargin);
         }
 
-        protected float CalcPanelWidth(int width)
+        protected double CalcPanelWidth(int width)
         {
             return _GridLeftMargin + CalcGridWidth(width) + _GridRightMargin;
         }
 
-        protected float CalcPanelHeight(int width)
+        protected double CalcPanelHeight()
         {
             return _GridTopMargin + CalcGridHeight() + _GridBottomMargin;
         }
 
+        protected override void OnRender(DrawingContext dc)
+        {
+            base.OnRender(dc);
+            Rect rect = new Rect(new Size(CalcPanelWidth(DataWidth), CalcPanelHeight()));
+            Pen pen = new Pen(Brushes.Black, _BorderThickness);
+            dc.DrawRoundedRectangle(null, pen, rect, _GridRoundSize, _GridRoundSize);
+        }
     }
 }

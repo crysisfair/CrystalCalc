@@ -24,7 +24,38 @@ namespace WuliCalc
         {
             InitializeComponent();
             NumberPanel p = new NumberPanel(32);
-            main.Children.Add(p);
+            this.Width = p.GetActualWidth() + 20;
+            mainMenu.Width = p.GetActualWidth();
+            mainGrid.Width = p.GetActualWidth();
+            contentGrid.Width = p.GetActualWidth();
+            contentGrid.Children.Add(p);
+        }
+
+        protected void SetDataWidth(int dataWidth)
+        {
+            double? panelWidth = null;
+            foreach(NumberPanel p in contentGrid.Children)
+            {
+                p.Render(dataWidth);
+                panelWidth = p.GetActualWidth();
+            }
+            if(panelWidth > 0.0f)
+            {
+                this.Width = (double)panelWidth + 20;
+                mainMenu.Width = (double)panelWidth;
+                mainGrid.Width = (double)panelWidth;
+                contentGrid.Width = (double)panelWidth;
+            }
+        }
+
+        private void DataWidthMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem m = sender as MenuItem;
+            int width = 0;
+            if(int.TryParse(m.Header.ToString(), out width) == true)
+            {
+                SetDataWidth(width);
+            }
         }
     }
 }
