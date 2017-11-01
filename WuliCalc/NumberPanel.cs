@@ -83,15 +83,12 @@ namespace WuliCalc
 
         public NumberPanel(int width) : base()
         {
-            Render(width);
-        }
-
-        public void Render(int width)
-        {
             DataWidth = width;
-            Children.Clear();
+            _N = new Number(0, DataWidth);
+            _N = (Number)~_N;
+            RowDefinition rowHeader = new RowDefinition();
+            RowDefinitions.Add(rowHeader);
             Height = CalcPanelHeight();
-            Width = CalcPanelWidth(DataWidth);
             Margin = new Thickness(_GridLeftMargin, _GridTopMargin, _GridRightMargin, _GridBottomMargin);
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
@@ -100,35 +97,77 @@ namespace WuliCalc
             RowDefinitions.Add(rowLabel);
             RowDefinition rowTb = new RowDefinition();
             RowDefinitions.Add(rowTb);
+            Render(width);
+        }
+
+        public void Render(int width)
+        {
+            DataWidth = width;
+            Children.Clear();
+            ColumnDefinitions.Clear();
+            Width = CalcPanelWidth(DataWidth);
+
+            Label value = new Label();
+            value.Content = String.Format("Width: {0} Value: {1}", width.ToString(), _N.ToString()) ;
+            SetRow(value, 0);
+            SetColumnSpan(value, width);
+            Children.Add(value);
 
             List<TextBox> tbs = new List<TextBox>();
             for(int i = 0; i < DataWidth; i += 1)
             {
-                TextBox tb = new TextBox();
-                tb.Text = i.ToString();
-                tb.HorizontalContentAlignment = HorizontalAlignment.Center;
-                tb.VerticalContentAlignment = VerticalAlignment.Center;
-                tb.Height = _TextBoxHeight;
-                tb.Width = _TextBoxWidth;
-                tb.Margin = new Thickness(_TextBoxLeftMargin, _TextBoxTopMargin, _TextBoxRightMargin, _TextBoxBottomMargin);
-                tbs.Add(tb);
-                ColumnDefinition col = new ColumnDefinition();
-                ColumnDefinitions.Add(col);
-                SetColumn(tb, i);
-                SetRow(tb, 1);
-
                 Label lb = new Label();
-                lb.Content = i.ToString();
+                lb.Content = (width - 1 - i).ToString();
                 lb.VerticalContentAlignment = VerticalAlignment.Center;
                 lb.HorizontalContentAlignment = HorizontalAlignment.Center;
                 lb.Height = _LabelHeight;
                 lb.Width = _LabelWidth;
                 SetColumn(lb, i);
-                SetRow(lb, 0);
+                SetRow(lb, 1);
+
+                TextBox tb = new TextBox();
+                tb.Text = _N.GetBit(i).ToString();
+                tb.HorizontalContentAlignment = HorizontalAlignment.Center;
+                tb.VerticalContentAlignment = VerticalAlignment.Center;
+                tb.Height = _TextBoxHeight;
+                tb.Width = _TextBoxWidth;
+                tb.Tag = (width - 1 - i).ToString();
+                tb.Margin = new Thickness(_TextBoxLeftMargin, _TextBoxTopMargin, _TextBoxRightMargin, _TextBoxBottomMargin);
+                tb.KeyDown += OnTextBoxKeyPress;
+                tb.PreviewMouseDown += OnTextBoxMouseClick;
+                tbs.Add(tb);
+                ColumnDefinition col = new ColumnDefinition();
+                ColumnDefinitions.Add(col);
+                SetColumn(tb, i);
+                SetRow(tb, 2);
+
 
                 Children.Add(tb);
                 Children.Add(lb);
             }
+        }
+
+        private void OnTextBoxMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            int id = int.Parse(tb.Tag.ToString());
+            _N.RevertBit(id);
+            Render(DataWidth);
+            e.Handled = true;
+        }
+
+        private void OnTextBoxKeyPress(object sender, KeyEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if(e.Key == Key.D1 || e.Key == Key.NumPad1)
+            {
+                tb.Text = "1";
+            }
+            else if(e.Key == Key.D0 || e.Key == Key.NumPad0)
+            {
+                tb.Text = "0";
+            }
+            e.Handled = true;
         }
 
         public double GetActualWidth()
@@ -143,7 +182,7 @@ namespace WuliCalc
 
         protected double CalcGridHeight()
         {
-            return 2 * (_TextBoxTopMargin + _TextBoxHeight + _TextBoxBottomMargin);
+            return 3 * (_TextBoxTopMargin + _TextBoxHeight + _TextBoxBottomMargin);
         }
 
         protected double CalcPanelWidth(int width)
@@ -160,8 +199,9 @@ namespace WuliCalc
         {
             base.OnRender(dc);
             Rect rect = new Rect(new Size(CalcPanelWidth(DataWidth), CalcPanelHeight()));
-            Pen pen = new Pen(Brushes.Black, _BorderThickness);
+            Pen pen = new Pen(Brushes.DarkGray, _BorderThickness);
             dc.DrawRoundedRectangle(null, pen, rect, _GridRoundSize, _GridRoundSize);
+            dc.DrawLine(pen, new Point(0, CalcGridHeight() / 3), new Point(CalcPanelWidth(DataWidth), CalcPanelHeight() / 3));
         }
     }
 }

@@ -117,7 +117,7 @@ namespace WuliCalc
             }
             else
             {
-                res = (1ul << (width + 1)) - 1;
+                res = (1ul << width) - 1;
             }
             return res;
         }
@@ -134,8 +134,12 @@ namespace WuliCalc
             if (lsb + width > 64) width = 64 - lsb;
 
             UInt64 m = GetMask(lsb + width);
-            UInt64 inv = ~GetMask(lsb);
-            return m & inv;
+            if (lsb == 0) return m;
+            else
+            {
+                UInt64 inv = ~GetMask(lsb - 1);
+                return m & inv;
+            }
         }
 
         #endregion
@@ -193,6 +197,12 @@ namespace WuliCalc
 
         public static BaseNumber operator |(BaseNumber lhs, BaseNumber rhs)
         {
+            lhs.OrWith(rhs);
+            return lhs;
+        }
+
+        public static BaseNumber operator ^(BaseNumber lhs, BaseNumber rhs)
+        {
             lhs.XorWith(rhs);
             return lhs;
         }
@@ -201,6 +211,12 @@ namespace WuliCalc
         {
             lhs.AndWith(rhs);
             return lhs;
+        }
+
+        public static BaseNumber operator ~(BaseNumber rhs)
+        {
+            rhs.XorWith(new BaseNumber(GetMask(rhs.Width)));
+            return rhs;
         }
         #endregion
 
@@ -222,13 +238,22 @@ namespace WuliCalc
             return res;
         }
 
-        public void XorWith(BaseNumber n)
+        public void OrWith(BaseNumber n)
         {
             if(n.Width < this.Width)
             {
                 n.ExpandTo(this.Width);
             }
             SetBaseData(n.GetData() | this.GetData());
+        }
+
+        public void XorWith(BaseNumber n)
+        {
+            if(n.Width < this.Width)
+            {
+                n.ExpandTo(this.Width);
+            }
+            SetBaseData(n.GetData() ^ this.GetData());
         }
 
         public void AndWith(BaseNumber n)
@@ -246,7 +271,8 @@ namespace WuliCalc
             {
                 return;
             }
-            BaseNumber n = new BaseNumber(1);
+            UInt64 mask = 1ul << posi;
+            XorWith(new BaseNumber(mask));
         }
 
         #region String Fomart
@@ -261,7 +287,7 @@ namespace WuliCalc
             {
                 throw new ArgumentOutOfRangeException("MSB value is larger than data width");
             }
-            UInt64 mask = GetMask(lsb, msb - lsb);
+            UInt64 mask = GetMask(lsb, msb - lsb + 1);
             UInt64 masked = this.GetBaseData() & mask;
             if(lsb > 0)
             {
@@ -272,8 +298,8 @@ namespace WuliCalc
 
         protected char[] GetFixedWidthHexChars(int msb, int lsb)
         {
-            char[] cs = GetFixedWidthDecChars(msb, lsb);
-            UInt64 n = UInt64.Parse(cs.ToString());
+            string cs = new String(GetFixedWidthDecChars(msb, lsb));
+            UInt64 n = UInt64.Parse(cs);
             UInt64 div = n;
             UInt64 rem = 0;
             List<int> hex = new List<int>();
@@ -287,7 +313,7 @@ namespace WuliCalc
             foreach(int h in hex)
             {
                 string s = h.ToString("X");
-                res.Insert(0, s);
+                res = s + res;
             }
             return res.ToCharArray();
         }
@@ -413,13 +439,27 @@ namespace WuliCalc
             string res = "";
             if(format.Equals("D"))
             {
-                res = this.GetFixedWidthDecChars(this.Width - 1, 0).ToString();
+                res = new String(GetFixedWidthDecChars(this.Width - 1, 0));
             }
             else if(format == "X")
             {
-                res = this.GetFixedWidthHexChars(this.Width - 1, 0).ToString();
+                res = new String(GetFixedWidthHexChars(this.Width - 1, 0));
+            }
+            else if(format == "B")
+            {
+                res = new String(GetFixedWidthBinChars(this.Width - 1, 0));
             }
             return res;
+        }
+
+        public char GetBit(int index)
+        {
+            string s = ToString("B");
+            if(index >= Width || index >= s.Length)
+            {
+                throw new ArgumentOutOfRangeException(index.ToString());
+            }
+            return s.ToCharArray()[index];
         }
 
         #endregion
