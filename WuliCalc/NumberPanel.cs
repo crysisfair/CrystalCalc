@@ -103,6 +103,7 @@ namespace WuliCalc
         public void Render(int width)
         {
             DataWidth = width;
+            _N.SetNewWidth(width);
             Children.Clear();
             ColumnDefinitions.Clear();
             Width = CalcPanelWidth(DataWidth);
@@ -113,7 +114,6 @@ namespace WuliCalc
             SetColumnSpan(value, width);
             Children.Add(value);
 
-            List<TextBox> tbs = new List<TextBox>();
             for(int i = 0; i < DataWidth; i += 1)
             {
                 Label lb = new Label();
@@ -135,7 +135,6 @@ namespace WuliCalc
                 tb.Margin = new Thickness(_TextBoxLeftMargin, _TextBoxTopMargin, _TextBoxRightMargin, _TextBoxBottomMargin);
                 tb.KeyDown += OnTextBoxKeyPress;
                 tb.PreviewMouseDown += OnTextBoxMouseClick;
-                tbs.Add(tb);
                 ColumnDefinition col = new ColumnDefinition();
                 ColumnDefinitions.Add(col);
                 SetColumn(tb, i);

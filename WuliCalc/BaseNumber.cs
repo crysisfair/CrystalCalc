@@ -38,7 +38,7 @@ namespace WuliCalc
             _Width = width;
             SetBaseData(n);
         }
-        
+
         public BaseNumber(UInt64 n, int width, bool signed)
         {
             _Width = width;
@@ -71,17 +71,57 @@ namespace WuliCalc
 
         protected UInt64 ExpandTo(int width)
         {
-            throw new NotImplementedException();
+            UInt64 res = 0;
+            if(_Signed == false)
+            {
+                res = GetBaseData();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            _Width = width;
+            return res;
         }
 
         protected UInt64 TruncateTo(int width)
         {
-            throw new NotImplementedException();
+            _Width = width;
+            return GetBaseData() & GetMask(width);
         }
 
         protected UInt64 SaturateTo(int width)
         {
-            throw new NotImplementedException();
+            UInt64 res = 0;
+            if(_Signed == false)
+            {
+                if((GetBaseData() & ~GetMask(width)) > 0)
+                {
+                    res = GetMask(width);
+                }
+                else
+                {
+                    res = TruncateTo(width);
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            _Width = width;
+            return res;
+        }
+
+        public void SetNewWidth(int width)
+        {
+            if(width > Width)
+            {
+                SetBaseData(ExpandTo(width));
+            }
+            else
+            {
+                SetBaseData(SaturateTo(width));
+            }
         }
 
         public void Truncate(int width)
