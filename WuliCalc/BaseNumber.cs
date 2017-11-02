@@ -318,6 +318,17 @@ namespace WuliCalc
             return res.ToCharArray();
         }
 
+        protected string ExpandStr(string input, int width)
+        {
+            StringBuilder res = new StringBuilder(input);
+            if(input.Length >= width)
+            {
+                return res.ToString();
+            }
+            res.Insert(0, "0", width - input.Length);
+            return res.ToString();
+        }
+
         protected UInt64 HexChar2Dec(char hex)
         {
             byte n = (byte)hex;
@@ -439,15 +450,18 @@ namespace WuliCalc
             string res = "";
             if(format.Equals("D"))
             {
-                res = new String(GetFixedWidthDecChars(this.Width - 1, 0));
+                res = new String(GetFixedWidthDecChars(Width - 1, 0));
             }
             else if(format == "X")
             {
-                res = new String(GetFixedWidthHexChars(this.Width - 1, 0));
+                res = new String(GetFixedWidthHexChars(Width - 1, 0));
+                int realWidth = (Width % 4 == 0) ? (Width / 4) : (Width / 4 + 1);
+                res = ExpandStr(res, realWidth);
             }
             else if(format == "B")
             {
-                res = new String(GetFixedWidthBinChars(this.Width - 1, 0));
+                res = new String(GetFixedWidthBinChars(Width - 1, 0));
+                res = ExpandStr(res, Width);
             }
             return res;
         }
