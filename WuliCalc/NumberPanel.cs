@@ -81,11 +81,13 @@ namespace WuliCalc
         double _BorderThickness = 1.0F;
         double _GridRoundSize = 1.0F;
 
+        SolidColorBrush _TextBoxOneBg = Brushes.BlueViolet;
+        SolidColorBrush _TextBoxZeroBg = Brushes.White;
+
         public NumberPanel(int width) : base()
         {
             DataWidth = width;
             _N = new Number(0, DataWidth);
-            _N = (Number)~_N;
             RowDefinition rowHeader = new RowDefinition();
             RowDefinitions.Add(rowHeader);
             Height = CalcPanelHeight();
@@ -100,6 +102,12 @@ namespace WuliCalc
             Render(width);
         }
 
+        protected int Min(int n1, int n2)
+        {
+            return (n1 < n2) ? n1 : n2;
+        }
+
+
         public void Render(int width)
         {
             DataWidth = width;
@@ -108,11 +116,41 @@ namespace WuliCalc
             ColumnDefinitions.Clear();
             Width = CalcPanelWidth(DataWidth);
 
-            Label value = new Label();
-            value.Content = String.Format("Width: {0} Value: {1}", width.ToString(), _N.ToString()) ;
-            SetRow(value, 0);
-            SetColumnSpan(value, width);
-            Children.Add(value);
+            Label hexLb = new Label();
+            hexLb.Content = "HEX: ";
+            hexLb.HorizontalAlignment = HorizontalAlignment.Right;
+            Label decLb = new Label();
+            decLb.Content = "DEC: ";
+            decLb.HorizontalAlignment = HorizontalAlignment.Right;
+            TextBox hexTb = new TextBox();
+            hexTb.Text = _N.ToString("X");
+            TextBox decTb = new TextBox();
+            decTb.Text = _N.ToString("D");
+
+            int hexLbStart = 0;
+            int hexLbWidth = Min(3, width / 3);
+            int hexTbStart = hexLbStart + hexLbWidth;
+            int hexTbWidth = Min(8, width / 3);
+            int decLbStart = hexTbStart + hexTbWidth;
+            int decLbWidth = Min(3, width / 3);
+            int decTbStart = decLbStart + decLbWidth;
+            int decTbWidth = hexTbWidth;
+            SetRow(hexLb, 0);
+            SetRow(hexTb, 0);
+            SetRow(decLb, 0);
+            SetRow(decTb, 0);
+            SetColumn(hexLb, hexLbStart);
+            SetColumnSpan(hexLb, hexLbWidth);
+            SetColumn(hexTb, hexTbStart);
+            SetColumnSpan(hexTb, hexTbWidth);
+            SetColumn(decLb, decLbStart);
+            SetColumnSpan(decLb, decLbWidth);
+            SetColumn(decTb, decTbStart);
+            SetColumnSpan(decTb, decTbWidth);
+            Children.Add(hexLb);
+            Children.Add(hexTb);
+            Children.Add(decLb);
+            Children.Add(decTb);
 
             for(int i = 0; i < DataWidth; i += 1)
             {
@@ -127,6 +165,14 @@ namespace WuliCalc
 
                 TextBox tb = new TextBox();
                 tb.Text = _N.GetBit(i).ToString();
+                if(tb.Text == "1")
+                {
+                    tb.Background = _TextBoxOneBg;
+                }
+                else
+                {
+                    tb.Background = _TextBoxZeroBg;
+                }
                 tb.HorizontalContentAlignment = HorizontalAlignment.Center;
                 tb.VerticalContentAlignment = VerticalAlignment.Center;
                 tb.Height = _TextBoxHeight;

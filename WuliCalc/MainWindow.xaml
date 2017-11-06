@@ -12,7 +12,7 @@
                 <MenuItem Header="Exit(_X)"></MenuItem>
             </MenuItem>
             <MenuItem Header="Settings(_S)">
-                <MenuItem Header="Stay On Top" IsCheckable="True"></MenuItem>
+                <MenuItem Header="Stay On Top" IsCheckable="True" Click="StayOnTop_Click"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Operands">
                     <MenuItem Header="1" IsCheckable="True"></MenuItem>
