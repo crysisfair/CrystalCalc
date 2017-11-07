@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -49,8 +50,12 @@ namespace WuliCalc
     {
         Number _N;
         int _ID;
+        bool _DecTbEdit = false;
+        bool _HexTbEdit = false;
 
         public int DataWidth { get; set; } 
+
+        public Number N { get; }
 
         // |--------------------------------------------------------------------|
         // |                                                                    |
@@ -151,6 +156,10 @@ namespace WuliCalc
             Children.Add(hexTb);
             Children.Add(decLb);
             Children.Add(decTb);
+            hexTb.KeyDown += HexTb_KeyDown;
+            hexTb.TextChanged += HexTb_TextChanged;
+            decTb.KeyDown += DecTb_KeyDown;
+            decTb.TextChanged += DecTb_TextChanged;
 
             for(int i = 0; i < DataWidth; i += 1)
             {
@@ -189,6 +198,59 @@ namespace WuliCalc
 
                 Children.Add(tb);
                 Children.Add(lb);
+            }
+
+            if(_DecTbEdit == true)
+            {
+                _DecTbEdit = false;
+                decTb.Focus();
+                decTb.SelectionStart = decTb.Text.Length;
+            }
+            if(_HexTbEdit == true)
+            {
+                _HexTbEdit = false;
+                hexTb.Focus();
+                hexTb.SelectionStart = hexTb.Text.Length;
+            }
+        }
+
+        private void HexTb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            _N = new Number(tb.Text, 16, DataWidth);
+            _HexTbEdit = true;
+            Render(DataWidth);
+        }
+
+        private void DecTb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            _N = new Number(tb.Text, 10, DataWidth);
+            _DecTbEdit = true;
+            Render(DataWidth);
+        }
+
+        private void DecTb_KeyDown(object sender, KeyEventArgs e)
+        {
+            if((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) || e.Key == Key.Delete)
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void HexTb_KeyDown(object sender, KeyEventArgs e)
+        {
+            if((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) || (e.Key >= Key.A && e.Key <= Key.F) || e.Key == Key.Delete)
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
             }
         }
 
@@ -248,5 +310,6 @@ namespace WuliCalc
             dc.DrawRoundedRectangle(null, pen, rect, _GridRoundSize, _GridRoundSize);
             dc.DrawLine(pen, new Point(0, CalcGridHeight() / 3), new Point(CalcPanelWidth(DataWidth), CalcPanelHeight() / 3));
         }
+
     }
 }

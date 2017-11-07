@@ -32,5 +32,11 @@ namespace WuliCalc
         {
         }
 
+        public Number(string s, int basement, int width)
+            : base(s, basement, width, false)
+        {
+
+        }
+
     }
 }

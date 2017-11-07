@@ -5,9 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WuliCalc"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" SizeToContent="WidthAndHeight">
     <Grid Name="mainGrid" Margin="0,0,0,0">
-        <Menu x:Name="mainMenu" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="517" Grid.ColumnSpan="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Menu x:Name="mainMenu" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Grid.Row="0">
             <MenuItem Header="File(_F)">
                 <MenuItem Header="Exit(_X)"></MenuItem>
             </MenuItem>
@@ -15,12 +19,12 @@
                 <MenuItem Header="Stay On Top" IsCheckable="True" Click="StayOnTop_Click"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Operands">
-                    <MenuItem Header="1" IsCheckable="True"></MenuItem>
-                    <MenuItem Header="2" IsCheckable="True"></MenuItem>
-                    <MenuItem Header="3" IsCheckable="True"></MenuItem>
-                    <MenuItem Header="4" IsCheckable="True"></MenuItem>
-                    <MenuItem Header="5" IsCheckable="True"></MenuItem>
-                    <MenuItem Header="Custom" IsCheckable="True"></MenuItem>
+                    <MenuItem Header="1" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="2" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="3" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="4" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="5" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="Custom"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Data Width">
                     <MenuItem Header="8" Click="DataWidthMenu_Click"></MenuItem>
@@ -31,6 +35,6 @@
             </MenuItem>
             <MenuItem Header="About(_A)"></MenuItem>
         </Menu>
-        <Grid Name="contentGrid" Grid.ColumnSpan="4" Margin="0,25,0,0"/>
+        <Grid Name="contentGrid" Grid.Row="1"/>
     </Grid>
 </Window>

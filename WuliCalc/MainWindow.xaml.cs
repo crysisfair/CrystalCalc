@@ -22,44 +22,64 @@ namespace WuliCalc
     /// </summary>
     public partial class MainWindow : Window
     {
+        protected int _DataWidth = 32;
+
         public MainWindow()
         {
             InitializeComponent();
-            IntPtr hWnd = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            IntPtr hWndProgMan = FindWindow("Progman", "Program Manager");
-            SetParent(hWnd, hWndProgMan);
-            NumberPanel p = new NumberPanel(32);
-            this.Width = p.GetActualWidth() + 20;
-            mainMenu.Width = p.GetActualWidth();
-            mainGrid.Width = p.GetActualWidth();
-            contentGrid.Width = p.GetActualWidth();
-            contentGrid.Children.Add(p);
+            NumberPanel p = new NumberPanel(_DataWidth);
+            SetOperands(1);
+            SetUiWidth(p.GetActualWidth());
+        }
+
+        protected void SetUiWidth(double width)
+        {
+            contentGrid.Width = width;
+            mainGrid.Width = contentGrid.Width;
+            mainMenu.Width = mainGrid.Width;
         }
     
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpWindowClass, string lpWindowName);
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
-        const int GWL_HWNDPARENT = -8;
-        [DllImport("user32.dll")]
-        static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
         protected void SetDataWidth(int dataWidth)
         {
             double? panelWidth = null;
-            foreach(NumberPanel p in contentGrid.Children)
+            double newHeight = mainMenu.Height;
+            _DataWidth = dataWidth;
+            foreach(UIElement e in contentGrid.Children)
             {
+                NumberPanel p = e as NumberPanel;
+                newHeight += p.Height;
                 p.Render(dataWidth);
                 panelWidth = p.GetActualWidth();
             }
             if(panelWidth > 0.0f)
             {
-                this.Width = (double)panelWidth + 20;
-                mainMenu.Width = (double)panelWidth;
-                mainGrid.Width = (double)panelWidth;
-                contentGrid.Width = (double)panelWidth;
+                SetUiWidth((double)panelWidth);
+            }
+        }
+
+        protected void SetOperands(int operands)
+        {
+            if(operands > 0)
+            {
+                int curCount = contentGrid.Children.Count;
+                if(operands > curCount)
+                {
+                    for(int i = 0; i < operands - curCount; i += 1)
+                    {
+                        RowDefinition row = new RowDefinition();
+                        contentGrid.RowDefinitions.Add(row);
+                        NumberPanel p = new NumberPanel(_DataWidth);
+                        contentGrid.Children.Add(p);
+                        Grid.SetRow(p, contentGrid.RowDefinitions.Count - 1);
+                    }
+                }
+                else
+                {
+                    if(curCount > 0)
+                    {
+                        contentGrid.Children.RemoveRange(operands - 1, curCount - operands);
+                    }
+                }
             }
         }
 
@@ -73,18 +93,26 @@ namespace WuliCalc
             }
         }
 
+        private void OperandsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem m = sender as MenuItem;
+            int operands = 1;
+            if(int.TryParse(m.Header.ToString(), out operands) == true)
+            {
+                SetOperands(operands);
+            }
+        }
+
         private void StayOnTop_Click(object sender, RoutedEventArgs e)
         {
-            var handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            IntPtr hprog = FindWindowEx(
-                FindWindowEx(
-                    FindWindow("Progman", "Program Manager"),
-                    IntPtr.Zero, "SHELLDLL_DefView", ""
-                ),
-                IntPtr.Zero, "SysListView32", "FolderView"
-            );
-            SetWindowLong(handle, GWL_HWNDPARENT, hprog);
-            this.Topmost = true;
+            if (this.Topmost == true)
+            {
+                this.Topmost = false;
+            }
+            else
+            {
+                this.Topmost = true;
+            }
         }
     }
 }
