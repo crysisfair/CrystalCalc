@@ -91,9 +91,10 @@ namespace WuliCalc
         SolidColorBrush _TextBoxOneBg = Brushes.BlueViolet;
         SolidColorBrush _TextBoxZeroBg = Brushes.White;
 
-        public NumberPanel(int width) : base()
+        public NumberPanel(int width, int id) : base()
         {
             DataWidth = width;
+            _ID = id;
             _N = new Number(0, DataWidth);
             RowDefinition rowHeader = new RowDefinition();
             RowDefinitions.Add(rowHeader);

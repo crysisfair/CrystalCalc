@@ -27,7 +27,7 @@ namespace WuliCalc
         public MainWindow()
         {
             InitializeComponent();
-            NumberPanel p = new NumberPanel(_DataWidth);
+            NumberPanel p = new NumberPanel(_DataWidth, 0);
             SetOperands(1);
         }
 
@@ -71,7 +71,7 @@ namespace WuliCalc
                     {
                         RowDefinition row = new RowDefinition();
                         contentGrid.RowDefinitions.Add(row);
-                        NumberPanel p = new NumberPanel(_DataWidth);
+                        NumberPanel p = new NumberPanel(_DataWidth, curCount + i);
                         width = p.GetActualWidth();
                         contentGrid.Children.Add(p);
                         Grid.SetRow(p, contentGrid.RowDefinitions.Count - 1);
@@ -84,7 +84,7 @@ namespace WuliCalc
                     if(curCount > 0)
                     {
                         contentGrid.Children.RemoveRange(operands - 1, curCount - operands);
-                        NumberPanel p = new NumberPanel(_DataWidth);
+                        NumberPanel p = new NumberPanel(_DataWidth, 0);
                         SetUiWidthHeight(contentGrid.ActualWidth, contentGrid.ActualHeight - p.Height * (curCount - operands));
                     }
                 }
