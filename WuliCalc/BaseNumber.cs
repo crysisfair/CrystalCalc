@@ -50,6 +50,10 @@ namespace WuliCalc
         {
             _Width = width;
             _Signed = signed;
+            if(String.IsNullOrWhiteSpace(s))
+            {
+                s = "0";
+            }
             switch(basement)
             {
                 case 10:

@@ -256,11 +256,14 @@ namespace WuliCalc
 
         private void OnTextBoxMouseClick(object sender, MouseButtonEventArgs e)
         {
-            TextBox tb = sender as TextBox;
-            int id = int.Parse(tb.Tag.ToString());
-            _N.RevertBit(id);
-            Render(DataWidth);
-            e.Handled = true;
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                TextBox tb = sender as TextBox;
+                int id = int.Parse(tb.Tag.ToString());
+                _N.RevertBit(id);
+                Render(DataWidth);
+                e.Handled = true;
+            }
         }
 
         private void OnTextBoxKeyPress(object sender, KeyEventArgs e)

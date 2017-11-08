@@ -29,12 +29,13 @@ namespace WuliCalc
             InitializeComponent();
             NumberPanel p = new NumberPanel(_DataWidth);
             SetOperands(1);
-            SetUiWidth(p.GetActualWidth());
         }
 
-        protected void SetUiWidth(double width)
+        protected void SetUiWidthHeight(double width, double height)
         {
             contentGrid.Width = width;
+            contentGrid.Height = height;
+            mainMenu.Width = width;
             mainGrid.Width = contentGrid.Width;
             mainMenu.Width = mainGrid.Width;
         }
@@ -42,7 +43,7 @@ namespace WuliCalc
         protected void SetDataWidth(int dataWidth)
         {
             double? panelWidth = null;
-            double newHeight = mainMenu.Height;
+            double newHeight = 0.0f;
             _DataWidth = dataWidth;
             foreach(UIElement e in contentGrid.Children)
             {
@@ -53,7 +54,7 @@ namespace WuliCalc
             }
             if(panelWidth > 0.0f)
             {
-                SetUiWidth((double)panelWidth);
+                SetUiWidthHeight((double)panelWidth, newHeight);
             }
         }
 
@@ -64,20 +65,27 @@ namespace WuliCalc
                 int curCount = contentGrid.Children.Count;
                 if(operands > curCount)
                 {
+                    double height = contentGrid.Height;
+                    double width = 0.0f;
                     for(int i = 0; i < operands - curCount; i += 1)
                     {
                         RowDefinition row = new RowDefinition();
                         contentGrid.RowDefinitions.Add(row);
                         NumberPanel p = new NumberPanel(_DataWidth);
+                        width = p.GetActualWidth();
                         contentGrid.Children.Add(p);
                         Grid.SetRow(p, contentGrid.RowDefinitions.Count - 1);
+                        height += p.Height;
                     }
+                    SetUiWidthHeight(width, height);
                 }
                 else
                 {
                     if(curCount > 0)
                     {
                         contentGrid.Children.RemoveRange(operands - 1, curCount - operands);
+                        NumberPanel p = new NumberPanel(_DataWidth);
+                        SetUiWidthHeight(contentGrid.ActualWidth, contentGrid.ActualHeight - p.Height * (curCount - operands));
                     }
                 }
             }
