@@ -1,0 +1,40 @@
+﻿<Window x:Class="WuliCalc.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WuliCalc"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525" SizeToContent="WidthAndHeight">
+    <Grid Name="mainGrid" Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Menu x:Name="mainMenu" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Grid.Row="0">
+            <MenuItem Header="File(_F)">
+                <MenuItem Header="Exit(_X)"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Settings(_S)">
+                <MenuItem Header="Stay On Top" IsCheckable="True" Click="StayOnTop_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Operands">
+                    <MenuItem Header="1" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="2" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="3" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="4" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="5" Click="OperandsMenu_Click"></MenuItem>
+                    <MenuItem Header="Custom"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Data Width">
+                    <MenuItem Header="8" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="16" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="32" Click="DataWidthMenu_Click"></MenuItem>
+                    <MenuItem Header="64" Click="DataWidthMenu_Click"></MenuItem>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="About(_A)"></MenuItem>
+        </Menu>
+        <Grid Name="contentGrid" Grid.Row="1"/>
+    </Grid>
+</Window>
