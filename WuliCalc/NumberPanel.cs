@@ -52,6 +52,8 @@ namespace WuliCalc
         int _ID;
         bool _DecTbEdit = false;
         bool _HexTbEdit = false;
+        bool _IsTextBoxHandled = false;
+        int _LastHandledTextBoxId = 0;
 
         public int DataWidth { get; set; } 
 
@@ -190,6 +192,8 @@ namespace WuliCalc
                 tb.Margin = new Thickness(_TextBoxLeftMargin, _TextBoxTopMargin, _TextBoxRightMargin, _TextBoxBottomMargin);
                 tb.KeyDown += OnTextBoxKeyPress;
                 tb.PreviewMouseDown += OnTextBoxMouseClick;
+                tb.MouseEnter += OnTextBoxMouseEnter;
+                tb.ContextMenu = null;
                 ColumnDefinition col = new ColumnDefinition();
                 ColumnDefinitions.Add(col);
                 SetColumn(tb, i);
@@ -211,6 +215,23 @@ namespace WuliCalc
                 _HexTbEdit = false;
                 hexTb.Focus();
                 hexTb.SelectionStart = hexTb.Text.Length;
+            }
+        }
+
+        private void OnTextBoxMouseEnter(object sender, MouseEventArgs e)
+        {
+            if(e.RightButton == MouseButtonState.Pressed)
+            {
+                TextBox tb = sender as TextBox;
+                int id = int.Parse(tb.Tag.ToString());
+                if(id != _LastHandledTextBoxId || _IsTextBoxHandled == false)
+                {
+                    _LastHandledTextBoxId = id;
+                    _IsTextBoxHandled = true;
+                    _N.RevertBit(id);
+                    Render(DataWidth);
+                }
+                e.Handled = true;
             }
         }
 
