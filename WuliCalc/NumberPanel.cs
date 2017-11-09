@@ -327,6 +327,11 @@ namespace WuliCalc
             return _GridTopMargin + CalcGridHeight() + _GridBottomMargin;
         }
 
+        public double CalcActualHeight()
+        {
+            return CalcPanelHeight();
+        }
+
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);

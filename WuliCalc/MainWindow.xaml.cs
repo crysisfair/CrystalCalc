@@ -63,9 +63,10 @@ namespace WuliCalc
             if(operands > 0)
             {
                 int curCount = contentGrid.Children.Count;
+                NumberPanel p0 = new NumberPanel(_DataWidth, 0);
+                double height = p0.CalcActualHeight() * curCount;
                 if(operands > curCount)
                 {
-                    double height = contentGrid.Height;
                     double width = 0.0f;
                     for(int i = 0; i < operands - curCount; i += 1)
                     {
@@ -84,9 +85,15 @@ namespace WuliCalc
                     if(curCount > 0)
                     {
                         contentGrid.Children.RemoveRange(operands - 1, curCount - operands);
+                        contentGrid.RowDefinitions.RemoveRange(operands - 1, curCount - operands);
                         NumberPanel p = new NumberPanel(_DataWidth, 0);
                         SetUiWidthHeight(contentGrid.ActualWidth, contentGrid.ActualHeight - p.Height * (curCount - operands));
                     }
+                }
+                for(int i = 0; i < contentGrid.Children.Count; i += 1)
+                {
+                    NumberPanel p = contentGrid.Children[i] as NumberPanel;
+                    Grid.SetRow(p, i);
                 }
             }
         }
