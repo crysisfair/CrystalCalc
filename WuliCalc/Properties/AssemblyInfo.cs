@@ -7,11 +7,11 @@ using System.Windows;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("CrystalCalc")]
-[assembly: AssemblyDescription("CrystalCalc: Hex and Bin Calculator by Crysisfair")]
+[assembly: AssemblyTitle("WuliCalc")]
+[assembly: AssemblyDescription("WuliCalc: Hex and Bin Calculator by Crysisfair")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CrystalCalc")]
+[assembly: AssemblyProduct("WuliCalc")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
