@@ -129,5 +129,11 @@ namespace WuliCalc
                 this.Topmost = true;
             }
         }
+
+        private void EditorMenu_Click(object sender, RoutedEventArgs e)
+        {
+            CodeEdit.CodeEdit editor = new CodeEdit.CodeEdit();
+            editor.Show();
+        }
     }
 }

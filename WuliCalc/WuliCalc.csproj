@@ -53,8 +53,9 @@
     <StartupObject>WuliCalc.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>..\..\Antlr\antlr-csharp-runtime-4.7\Antlr4.Runtime.Standard.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ThirdParty\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -76,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CodeEdit\CodeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -85,6 +90,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseNumber.cs" />
+    <Compile Include="CodeEdit\CodeEdit.xaml.cs">
+      <DependentUpon>CodeEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Configer.cs" />
     <Compile Include="IOperator.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -116,7 +124,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="CodeEdit\CustomHighlighting.xshd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -133,8 +141,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Inter\Antlr\" />
+    <Folder Include="Inter\" />
     <Folder Include="test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\ICSharpCode.AvalonEdit.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

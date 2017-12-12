@@ -1,0 +1,17 @@
+﻿<Window x:Class="WuliCalc.CodeEdit.CodeEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WuliCalc.CodeEdit"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        mc:Ignorable="d"
+        Title="CodeEdit" Height="300" Width="300">
+        <avalonEdit:TextEditor
+                    Name="textEditor"
+                    FontFamily="Consolas"
+                    FontSize="10pt"
+                    SyntaxHighlighting="C#"
+                >Welcome to AvalonEdit!
+        </avalonEdit:TextEditor>
+</Window>
